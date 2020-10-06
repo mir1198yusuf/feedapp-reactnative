@@ -1,4 +1,5 @@
 import axios from 'axios';
+import RNSecureStorage from 'rn-secure-storage';
 
 export const axiosAPICall = (method,url,data,headers) => {
 	let request = {
@@ -19,5 +20,11 @@ export const axiosAPICall = (method,url,data,headers) => {
 	}
 	return axios.request(request)
 		.then(res => res.data)
+		.catch(error => {throw error});
+};
+
+export const setRNSecureStorage = (key,value) => {
+	return RNSecureStorage.set(key,value,{})
+		.then(res => res)
 		.catch(error => {throw error});
 };

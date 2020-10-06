@@ -6,4 +6,6 @@ export const BACKEND_URLS = {
 export const HTTP_METHODS = {
 	POST: 'post',
 	GET: 'get',
-}
+};
+
+export const API_TOKEN_KEY = 'API_TOKEN';

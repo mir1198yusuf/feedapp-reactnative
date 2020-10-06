@@ -2,9 +2,9 @@ import {userLoginRequestSuccess, userLoginRequestFailure,
 		userLogoutRequestSuccess, userLogoutRequestFailure,
 		userCheckLoggedInRequestSuccess, userCheckLoggedInRequestFailure,} 
 		from './../actionCreators/userActionCreators';
-import {axiosAPICall} from './../commons/helpers';
+import {axiosAPICall, setRNSecureStorage} from './../commons/helpers';
 import {put,call} from 'redux-saga/effects';
-import {BACKEND_URLS, HTTP_METHODS} from './../commons/constants';
+import {BACKEND_URLS, HTTP_METHODS, API_TOKEN_KEY} from './../commons/constants';
 
 export function* userLoginSaga(action) {
 	let response;
@@ -18,6 +18,7 @@ export function* userLoginSaga(action) {
 	];
 	try {
 		response = yield call(axiosAPICall, ...functionParams);
+		yield call(setRNSecureStorage, API_TOKEN_KEY, response.token);
 		yield put(userLoginRequestSuccess(response.username));
 	}
 	catch (error) {
