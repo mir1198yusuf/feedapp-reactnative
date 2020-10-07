@@ -8,4 +8,9 @@ export const HTTP_METHODS = {
 	GET: 'get',
 };
 
-export const API_TOKEN_KEY = 'API_TOKEN';
+export const RN_SECURE_STORAGE_KEYS = {
+	API_TOKEN_KEY: 'API_TOKEN',
+	USERNAME_KEY: 'USERNAME',
+	TOKEN_EXPIRY_KEY: 'TOKEN_EXPIRY',
+};
+

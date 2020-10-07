@@ -4,7 +4,7 @@ import {userLoginRequestSuccess, userLoginRequestFailure,
 		from './../actionCreators/userActionCreators';
 import {axiosAPICall, setRNSecureStorage} from './../commons/helpers';
 import {put,call} from 'redux-saga/effects';
-import {BACKEND_URLS, HTTP_METHODS, API_TOKEN_KEY} from './../commons/constants';
+import {BACKEND_URLS, HTTP_METHODS, RN_SECURE_STORAGE_KEYS} from './../commons/constants';
 
 export function* userLoginSaga(action) {
 	let response;
@@ -18,7 +18,9 @@ export function* userLoginSaga(action) {
 	];
 	try {
 		response = yield call(axiosAPICall, ...functionParams);
-		yield call(setRNSecureStorage, API_TOKEN_KEY, response.token);
+		yield call(setRNSecureStorage, RN_SECURE_STORAGE_KEYS.API_TOKEN_KEY, response.token);
+		yield call(setRNSecureStorage, RN_SECURE_STORAGE_KEYS.USERNAME_KEY, response.username);
+		yield call(setRNSecureStorage, RN_SECURE_STORAGE_KEYS.TOKEN_EXPIRY_KEY, response.expiry);
 		yield put(userLoginRequestSuccess(response.username));
 	}
 	catch (error) {
