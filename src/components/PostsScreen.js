@@ -1,137 +1,43 @@
 import React from "react";
-
-import {View, ScrollView, TouchableOpacity, StyleSheet, RefreshControl} from "react-native";
+import {connect} from 'react-redux';
+import {View, ScrollView, TouchableOpacity, StyleSheet, RefreshControl,
+        Alert, ActivityIndicator,}
+        from "react-native";
 import Text from "./MyText.js";
 import FilterModal from "./FilterModal.js";
 import PostTemplate from "./PostTemplate.js";
+import store from './../redux-store';
+import * as postActionCreators from './../redux-store/actionCreators/postActionCreators';
 
 const PostsScreen = (props) => {
 
     const [showFilterModalState, changeFilterModalState] = React.useState(false);
     const [filterCondition, changeFilterCondition] = React.useState({keyword: "", createdBy: ""});
+    const [isFetchingPosts, onIsFetchingPostsChange] = React.useState(false);
 
-	let data = [
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-07-14T12:23:37.995320+05:30",
-        "created_on_humanized": "a minute ago",
-        "file": "/media/SampleVideo_1280x720_1mb.mp4",
-        "id": 10,
-        "message": "video post"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-07-02T15:15:00.948653+05:30",
-        "created_on_humanized": "1 week, 4 days ago",
-        "file": "/media/runthis.txt",
-        "id": 9,
-        "message": "this is the post message"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-06-20T19:41:16.000292+05:30",
-        "created_on_humanized": "3 weeks, 2 days ago",
-        "file": "/media/annual_yyp1F1p.jpg",
-        "id": 8,
-        "message": "asdf"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-06-20T19:41:13.077974+05:30",
-        "created_on_humanized": "3 weeks, 2 days ago",
-        "file": "/media/annual_cEIPHx2.jpg",
-        "id": 7,
-        "message": "asdf"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-06-20T19:41:10.698424+05:30",
-        "created_on_humanized": "3 weeks, 2 days ago",
-        "file": "/media/annual.jpg",
-        "id": 6,
-        "message": "asdf"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-06-19T01:26:28.044978+05:30",
-        "created_on_humanized": "3 weeks, 4 days ago",
-        "file": null,
-        "id": 5,
-        "message": "fifth post"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-06-19T01:26:13.178066+05:30",
-        "created_on_humanized": "3 weeks, 4 days ago",
-        "file": null,
-        "id": 4,
-        "message": "fourth\npost"
-    },
-    {
-        "created_by": {
-            "email": "",
-            "id": 2,
-            "username": "userdemo"
-        },
-        "created_on": "2020-06-18T13:04:32.429234+05:30",
-        "created_on_humanized": "3 weeks, 4 days ago",
-        "file": null,
-        "id": 3,
-        "message": "third post"
-    },
-    {
-        "created_by": {
-            "email": "mir1198yusuf@gmail.com",
-            "id": 1,
-            "username": "mir1198yusuf1"
-        },
-        "created_on": "2020-06-18T12:57:40.470161+05:30",
-        "created_on_humanized": "3 weeks, 4 days ago",
-        "file": "/media/download.jpeg",
-        "id": 2,
-        "message": "second post with image"
-    },
-    {
-        "created_by": {
-            "email": "mir1198yusuf@gmail.com",
-            "id": 1,
-            "username": "mir1198yusuf1"
-        },
-        "created_on": "2020-06-18T12:57:13.274334+05:30",
-        "created_on_humanized": "3 weeks, 4 days ago",
-        "file": null,
-        "id": 1,
-        "message": "first post"
-    }
-];
+    React.useEffect(() => {
+        store.dispatch(postActionCreators.postFetchRequestAction());
+    }, []
+    );
+
+    React.useEffect(() => {
+        if (props.postReducer.requestState) {
+            onIsFetchingPostsChange(true);
+        }
+        else if (!props.postReducer.requestState) {
+            onIsFetchingPostsChange(false);
+        }
+
+        if (props.postReducer.error) {
+            Alert.alert(
+                'Error',
+                'Posts fetching action failed. Refresh again',
+            );
+        }
+    },[props.postReducer]
+    );
+
+    let data = props.postReducer.posts;
     
     const navigateToNewPost = () => {
         props.navigation.navigate("New Post");
@@ -154,6 +60,7 @@ const PostsScreen = (props) => {
 
     const onFeedRefresh = () => {
     	onFilterConditionChange("", "");
+        store.dispatch(postActionCreators.postFetchRequestAction());
     };
 
     data = data.filter(post => {
@@ -184,7 +91,14 @@ const PostsScreen = (props) => {
             	changeFilter={onFilterConditionChange}
                 />
             <View style={styles.marginTop15} >
-    			{
+                {   
+                    isFetchingPosts &&
+        			<ActivityIndicator   
+                        animating={isFetchingPosts}
+                        color='#443e3e'
+                        size='large'    />
+                }
+                {
     				(data.length>0) ? 
 	    			(data.map(post => (<PostTemplate key={post.id} post={post} navigation={props.navigation} />))) : 
 	    			(<Text style={styles.textAlignCenter} >No posts created</Text>)
@@ -222,4 +136,9 @@ const styles = StyleSheet.create({
     },
 });	
 
-export default PostsScreen;
+const mapStateToProps = state => {
+    const {postReducer} = state;
+    return {postReducer};
+};
+
+export default connect (mapStateToProps) (PostsScreen);
