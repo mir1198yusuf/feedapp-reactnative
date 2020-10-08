@@ -39,10 +39,29 @@ export default userReducer = (state=defaultState, action) => {
 
 		// user logout actions
 		case userActionTypes.userLogoutRequestAction:
+			return {
+				...state,
+				requestState: true,
+				requestStatus: 'user logout start',
+				error: null,
+			};
 
 		case userActionTypes.userLogoutRequestSuccess:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'user logout success',
+				error: null,
+				USER: null,
+			};
 
 		case userActionTypes.userLogoutRequestFailure:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'user logout failed',
+				error: action.error,
+			};
 
 		// user check logged-in actions
 		case userActionTypes.userCheckLoggedInRequestAction:

@@ -28,3 +28,15 @@ export const setRNSecureStorage = (key,value) => {
 		.then(res => res)
 		.catch(error => {throw error});
 };
+
+export const getRNSecureStorage = (key) => {
+	return RNSecureStorage.get(key)
+		.then(res => res)
+		.catch(error => {throw error});
+};
+
+export const removeRNSecureStorage = (key) => {
+	return RNSecureStorage.remove(key)
+		.then(res => res)
+		.catch(error => {throw error});
+};
