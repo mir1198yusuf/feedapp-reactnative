@@ -39,10 +39,36 @@ export default postReducer = (state=defaultState, action) => {
 
 		// post create actions
 		case postActionTypes.postCreateRequestAction:
+			return {
+				...state,
+				requestState: true,
+				requestStatus: 'post create start',
+				error: null,
+			};
 
 		case postActionTypes.postCreateRequestSuccess:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'post create success',
+				error: null,
+				// posts[] we will fetch again, and not invalidating previous posts
+			};
 
 		case postActionTypes.postCreateRequestFailure:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'post create failed',
+				error: action.error,
+			};
+
+		case postActionTypes.postErrorResolveAction:
+			return {
+				...state,
+				requestStatus: 'post error resolved',
+				error: null,
+			};
 
 		default:
 			return state;

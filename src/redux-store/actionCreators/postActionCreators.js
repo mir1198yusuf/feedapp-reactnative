@@ -43,3 +43,9 @@ export const postCreateRequestFailure = (error) => {
 		error: error,
 	};
 };
+
+export const postErrorResolveAction = () => {
+	return {
+		type: postActionTypes.postErrorResolveAction,
+	};
+}

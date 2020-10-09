@@ -9,4 +9,7 @@ export default postActionTypes = {
 	postCreateRequestAction: 'POST_CREATE_REQUEST_ACTION',
 	postCreateRequestSuccess: 'POST_CREATE_REQUEST_SUCCESS',
 	postCreateRequestFailure: 'POST_CREATE_REQUEST_FAILURE',	
+
+	// post error resolve
+	postErrorResolveAction: 'POST_ERROR_RESOLVE_ACTION',
 };

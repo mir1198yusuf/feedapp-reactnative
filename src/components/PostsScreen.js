@@ -28,11 +28,14 @@ const PostsScreen = (props) => {
             onIsFetchingPostsChange(false);
         }
 
-        if (props.postReducer.error) {
+        if (props.postReducer.requestStatus==='post fetch failed') {
             Alert.alert(
                 'Error',
                 'Posts fetching action failed. Refresh again',
             );
+        }
+        else if (props.postReducer.requestStatus==='post create success') {
+            store.dispatch(postActionCreators.postFetchRequestAction());
         }
     },[props.postReducer]
     );

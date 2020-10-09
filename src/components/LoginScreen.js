@@ -26,7 +26,6 @@ const LoginScreen = (props) => {
 		else if (props.userReducer.requestState===false) {
 			onIsLoggingInChange(false);
 		} 
-		
 		if (props.userReducer.requestStatus==='user login success') {
 			props.navigation.navigate('Posts');
 		}

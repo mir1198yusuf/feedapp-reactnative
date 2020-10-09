@@ -1,14 +1,17 @@
 import React from "react";
-
 import Text from "./MyText.js";
-import {ScrollView, View, StyleSheet, TextInput, TouchableOpacity} from "react-native";
-
+import {ScrollView, View, StyleSheet, TextInput, TouchableOpacity,
+		Alert, ActivityIndicator,} from "react-native";
 import DocumentPicker from "react-native-document-picker";
+import store from './../redux-store';
+import * as postActionCreators from './../redux-store/actionCreators/postActionCreators';
+import {connect} from 'react-redux';
 
 const NewPostScreen = (props) => {
 
-	const [messageValue, onMessageChange] = React.useState();
+	const [messageValue, onMessageChange] = React.useState('');
 	const [fileValue, onFileChange] = React.useState();
+	const [isCreatingPost, onIsCreatingPostChange] = React.useState(false);
 
 	const chooseSingleFile = async () => {
 		try {
@@ -17,17 +20,46 @@ const NewPostScreen = (props) => {
 			});
 			onFileChange(result);
 		} catch(err){
-			alert(err.message);
+			Alert.alert(
+				'Error',
+				err.message,
+			);
 		}
 	};
 
-	const submitPost = () => {
-		/*let form_data = new FormData();
-		form_data.append("message", messageValue);
-		if (fileValue){
-			form_data.append("file", fileValue, fileValue.name);
+	React.useEffect(() => {
+		if (props.postReducer.requestState) {
+			onIsCreatingPostChange(true);
 		}
-		console.log(form_data);*/
+		else if (!props.postReducer.requestState) {
+			onIsCreatingPostChange(false);
+		}
+
+		if (props.postReducer.requestStatus==='post create success') {
+			props.navigation.navigate('Posts');
+		}
+		else if (props.postReducer.requestStatus==='post create failed') {
+			let errorMessage = '';
+			if (props.postReducer.error.message) {
+				errorMessage = `Message: ${props.postReducer.error.message[0]}`;
+			}
+			else if (props.postReducer.error.detail) {
+				errorMessage = 'Post Creation failed. Login first';
+			}
+			else {
+				errorMessage = 'Post Creation failed. Try again';
+			}
+			Alert.alert(
+				'Error',
+				errorMessage,
+			);
+			store.dispatch(postActionCreators.postErrorResolveAction());
+		}
+	},[props.postReducer]
+	);
+
+	const submitPost = () => {
+		store.dispatch(postActionCreators.postCreateRequestAction(messageValue,fileValue));
 	};
 
 	return (
@@ -58,11 +90,18 @@ const NewPostScreen = (props) => {
 				</View>
 			</View>
 			<View>
-				<TouchableOpacity onPress={submitPost}>
-					<Text style={{...styles.buttonStyle, ...styles.submitButton}}>
-						Create Post
-					</Text>
-				</TouchableOpacity>
+				{
+					!isCreatingPost &&
+					<TouchableOpacity onPress={submitPost}>
+						<Text style={{...styles.buttonStyle, ...styles.submitButton}}>
+							Create Post
+						</Text>
+					</TouchableOpacity>
+				}
+				<ActivityIndicator
+					animating={isCreatingPost}
+					color='#443e3e'
+					size='large'	/>
 			</View>
 		</ScrollView>
 	);
@@ -106,4 +145,9 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default NewPostScreen;
+const mapStateToProps = state => {
+	const {postReducer} = state;
+	return {postReducer};
+};
+
+export default connect(mapStateToProps) (NewPostScreen);
