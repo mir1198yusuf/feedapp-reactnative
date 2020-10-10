@@ -30,16 +30,16 @@ export function* userLoginSaga(action) {
 
 export function* userLogoutSaga(action) {
 	let response;
-	let apiToken = yield call(getRNSecureStorage, RN_SECURE_STORAGE_KEYS.API_TOKEN_KEY);
-	let functionParams = [
-		HTTP_METHODS.POST,
-		BACKEND_URLS.API_URL + 'logout/',
-		{},
-		{
-			Authorization: `Token ${apiToken}`,
-		},
-	];
 	try {
+		let apiToken = yield call(getRNSecureStorage, RN_SECURE_STORAGE_KEYS.API_TOKEN_KEY);
+		let functionParams = [
+			HTTP_METHODS.POST,
+			BACKEND_URLS.API_URL + 'logout/',
+			{},
+			{
+				Authorization: `Token ${apiToken}`,
+			},
+		];
 		response = yield call(axiosAPICall, ...functionParams);
 		yield call(removeRNSecureStorage, RN_SECURE_STORAGE_KEYS.API_TOKEN_KEY);
 		yield call(removeRNSecureStorage, RN_SECURE_STORAGE_KEYS.USERNAME_KEY);
@@ -52,5 +52,20 @@ export function* userLogoutSaga(action) {
 };
 
 export function* userCheckLoggedInSaga(action) {
-
+	let apiToken, userName, expiry, expiryEpoch, currentEpoch;
+	try {
+		apiToken = yield call(getRNSecureStorage, RN_SECURE_STORAGE_KEYS.API_TOKEN_KEY);
+		userName = yield call(getRNSecureStorage, RN_SECURE_STORAGE_KEYS.USERNAME_KEY);
+		expiry = yield call(getRNSecureStorage, RN_SECURE_STORAGE_KEYS.TOKEN_EXPIRY_KEY);
+		expiryEpoch = new Date(expiry).getTime();
+		currentEpoch = new Date().getTime();
+		// if token has expired
+		if (expiryEpoch <= currentEpoch) {
+			throw new Error('Token expired');
+		}
+		yield put(userCheckLoggedInRequestSuccess(userName));
+	}
+	catch (error) {
+		yield put(userCheckLoggedInRequestFailure(error));
+	}
 };
