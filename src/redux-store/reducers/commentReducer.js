@@ -12,10 +12,41 @@ export default commentReducer = (state=defaultState, action) => {
 	switch (action.type) {
 		// comment fetch actions
 		case commentActionTypes.commentFetchRequestAction:
+			let newState = {
+				...state,
+				requestState: true,
+				requestStatus: 'comment fetch start',
+				error: null,
+				postId: action.postId,
+			};
+			// invalidate previous comments only if fetching for new post
+			if (state.postId!==action.postId) {
+				newState = {
+					...newState,
+					comments: [],
+				};
+			}
+			return newState;
 
 		case commentActionTypes.commentFetchRequestSuccess:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'comment fetch success',
+				error: null,
+				comments: action.comments,
+				//same postId
+			};
 
 		case commentActionTypes.commentFetchRequestFailure:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'comment fetch failed',
+				error: action.error,
+				//postId: null, not invalidating postId
+				//comments: [],  not invalidating previous comments
+			};
 
 		// comment create actions
 		case commentActionTypes.commentCreateRequestAction:
@@ -23,6 +54,13 @@ export default commentReducer = (state=defaultState, action) => {
 		case commentActionTypes.commentCreateRequestSuccess:
 
 		case commentActionTypes.commentCreateRequestFailure:
+
+		case commentActionTypes.commentErrorResolveAction:
+			return {
+				...state,
+				requestStatus: 'comment error resolved',
+				error: null,
+			};
 
 		default:
 			return state;

@@ -46,3 +46,8 @@ export const commentCreateRequestFailure = (error) => {
 	};
 };
 
+export const commentErrorResolveAction = () => {
+	return {
+		type: commentActionTypes.commentErrorResolveAction,
+	};
+};

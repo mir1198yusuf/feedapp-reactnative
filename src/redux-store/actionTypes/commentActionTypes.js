@@ -9,4 +9,7 @@ export default commentActionTypes = {
 	commentCreateRequestAction: 'COMMENT_CREATE_REQUEST_ACTION',
 	commentCreateRequestSuccess: 'COMMENT_CREATE_REQUEST_SUCCESS',
 	commentCreateRequestFailure: 'COMMENT_CREATE_REQUEST_FAILURE',	
+
+	// comment error resolve
+	commentErrorResolveAction: 'COMMENT_ERROR_RESOLVE_ACTION',
 };
