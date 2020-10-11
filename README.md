@@ -39,6 +39,7 @@ I created this project while learning React Native.
 - redux - Redux for managing state in app
 - react-redux - React library for Redux
 - redux-saga - Using Saga for async operations in Redux
+- rn-secure-storage - Secure storage for React Native
 - Sublime Text Editor - for writing code
 - Git - for version control
 
