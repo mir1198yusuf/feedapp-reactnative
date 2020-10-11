@@ -42,7 +42,7 @@ const CommentsScreen = (props) => {
     );
 
     const navigateToNewComment = () => {
-        props.navigation.navigate("New Comment");
+        props.navigation.navigate("New Comment", {post: props.route.params.post});
     };
 
 	return (

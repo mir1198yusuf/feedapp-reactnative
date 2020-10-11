@@ -50,10 +50,31 @@ export default commentReducer = (state=defaultState, action) => {
 
 		// comment create actions
 		case commentActionTypes.commentCreateRequestAction:
+			return {
+				...state,
+				requestState: true,
+				requestStatus: 'comment create start',
+				error: null,
+				postId: action.postId,
+			};
 
 		case commentActionTypes.commentCreateRequestSuccess:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'comment create success',
+				error: null,
+				//same postId as in state
+				//comments: [] we will fetch again so not invalidating
+			};
 
 		case commentActionTypes.commentCreateRequestFailure:
+			return {
+				...state,
+				requestState: false,
+				requestStatus: 'comment create failed',
+				error: action.error,
+			};
 
 		case commentActionTypes.commentErrorResolveAction:
 			return {
