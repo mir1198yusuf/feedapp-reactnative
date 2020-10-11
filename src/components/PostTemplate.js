@@ -1,11 +1,8 @@
 import React from "react";
-
 import Text from "./MyText.js";
 import {View, StyleSheet, Linking, Image, TouchableOpacity} from "react-native";
-
 import {WebView} from "react-native-webview";
-
-import {API_URL} from "./constants.js";
+import {BACKEND_URLS} from "./../redux-store/commons/constants";
 
 const PostTemplate = (props) => {
 
@@ -21,7 +18,7 @@ const PostTemplate = (props) => {
 			<Text>{props.post.message}</Text>
 			<Text style={styles.quoteStyle} >❞</Text>
 			<View>
-				{(props.post.file) ? getFile(API_URL+props.post.file) : null}
+				{(props.post.file) ? getFile(BACKEND_URLS.API_MEDIA_URL+props.post.file) : null}
 			</View>
 			<TouchableOpacity onPress={navigateToComments} >
 				<Text style={{...styles.buttonStyle, ...styles.whiteOn443e3e}} >
@@ -46,10 +43,11 @@ const getFile = (url) => {
 	}
 	else{
 		return (
+			
 			<Text>
 				Attachment : 
 				<Text style={styles.linkStyle} 
-					onPress={() => Linking.openURL(API_URL+props.post.file)} 	>
+					onPress={() => Linking.openURL(url)} 	>
 					file
 				</Text> 
 			</Text>
